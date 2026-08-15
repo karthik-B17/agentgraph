@@ -1,0 +1,389 @@
+/* ---------------------------------------------------------------------
+   Design tokens
+   AgentGraph is styled like a flight-recorder / control-room tool for
+   debugging AI agents — dark, technical, data-forward. Not a generic
+   SaaS dashboard.
+--------------------------------------------------------------------- */
+:root {
+  --bg: #0b0e14;
+  --surface: #131720;
+  --surface-raised: #171c27;
+  --border: #232838;
+  --text: #e6e9ef;
+  --text-muted: #7a8194;
+  --text-faint: #4a5064;
+
+  --success: #2dd4bf;
+  --success-dim: #1a5c54;
+  --failure: #f2545b;
+  --failure-dim: #5c1f22;
+  --root-cause: #f5a623;
+  --root-cause-dim: #5c4419;
+
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-body: "Inter", -apple-system, sans-serif;
+
+  --radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--success-dim);
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--success);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Layout
+--------------------------------------------------------------------- */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-brand {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-brand .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+.nav-link {
+  display: block;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-link:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.nav-link.active {
+  background: var(--surface-raised);
+  color: var(--success);
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px 40px;
+  max-width: 1100px;
+}
+
+.page-title {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 0 0 28px 0;
+}
+
+/* ---------------------------------------------------------------------
+   Shared components
+--------------------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.status-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-pill.success {
+  background: var(--success-dim);
+  color: var(--success);
+}
+.status-pill.success .dot {
+  background: var(--success);
+}
+
+.status-pill.failed {
+  background: var(--failure-dim);
+  color: var(--failure);
+}
+.status-pill.failed .dot {
+  background: var(--failure);
+}
+
+.status-pill.pending {
+  background: var(--surface-raised);
+  color: var(--text-muted);
+}
+.status-pill.pending .dot {
+  background: var(--text-muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.btn.btn-danger:hover {
+  border-color: var(--failure);
+  color: var(--failure);
+}
+
+/* ---------------------------------------------------------------------
+   State screens: loading / empty / error
+--------------------------------------------------------------------- */
+.state-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 48px 0;
+  color: var(--text-muted);
+}
+
+.state-screen .state-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+
+.state-screen.error .state-label {
+  color: var(--failure);
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--success);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Signature element: the trace line
+   A vertical circuit-like line connecting each task in a run's chain.
+   Pulses/glows at the node identified as a root cause.
+--------------------------------------------------------------------- */
+.trace {
+  position: relative;
+  padding-left: 28px;
+}
+
+.trace::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--border), var(--border));
+}
+
+.trace-node {
+  position: relative;
+  padding-bottom: 24px;
+}
+
+.trace-node:last-child {
+  padding-bottom: 0;
+}
+
+.trace-node::before {
+  content: "";
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--text-faint);
+}
+
+.trace-node.success::before {
+  border-color: var(--success);
+}
+
+.trace-node.failed::before {
+  border-color: var(--failure);
+  box-shadow: 0 0 0 3px var(--failure-dim);
+}
+
+.trace-node.root-cause::before {
+  border-color: var(--root-cause);
+  background: var(--root-cause);
+  box-shadow: 0 0 0 4px var(--root-cause-dim), 0 0 12px var(--root-cause);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px var(--root-cause-dim), 0 0 12px var(--root-cause);
+  }
+  50% {
+    box-shadow: 0 0 0 7px var(--root-cause-dim), 0 0 18px var(--root-cause);
+  }
+}
+
+.trace-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.trace-card.root-cause {
+  border-color: var(--root-cause);
+  background: var(--root-cause-dim);
+}
+
+.run-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 140px 160px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.run-row:hover {
+  background: var(--surface-raised);
+}
+
+.run-row:last-child {
+  border-bottom: none;
+}
+
+.run-row-header {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  padding: 0 16px 8px 16px;
+}
+
+.cluster-card {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cluster-card:last-child {
+  border-bottom: none;
+}
